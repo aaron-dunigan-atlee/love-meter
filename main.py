@@ -98,7 +98,6 @@ def measure_love():
     reset()
 
 # Main code.
-initialize()
 ready()
 while True:
     if is_touched(HANDLE):
