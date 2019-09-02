@@ -15,6 +15,12 @@ MUSIC_GROUP_2_PATH = "/home/pi/love-meter/group2/"
 MUSIC_GROUP_3_PATH = "/home/pi/love-meter/group3/"
 # Assuming servo is connected to servo1 connector.  Change this if using a different port.
 METER_SERVO = crickit.servo1
+# Initialize LED connected to neopixel port.
+crickit.init_neopixel(1)
+LED = crickit.neopixel
+# Color definitions
+YELLOW = (255, 255, 0)
+GREEN = (0, 255, 0)
 
 # Global variables
 # Start with a random love level from 5 to 8.
@@ -31,13 +37,28 @@ def meter_increment(love):
     """ Add one to level, but keep within meter range. """
     return min(love + 1, METER_MAX)
 
-def set_meter(level):
-    """ Set servo to corresponding meter level, as specified by SERVO_ANGLES. """
-    # Check we've received an appropriate level first:
+def set_meter(level, duration):
+    """ 
+    Set servo to corresponding meter level, as specified by SERVO_ANGLES. Do so over 
+    specified time  duration. 
+    """
+    
+    # Check we've received an appropriate level first. If not, do nothing.
     if level in SERVO_ANGLES:
-        METER_SERVO.angle = SERVO_ANGLES[level]
+        # TODO: turn on yellow LED
+        target_angle = SERVO_ANGLES[level]
+        # TODO: implement time duration
+        METER_SERVO.angle = target_angle
+        # TODO: turn off yellow LED
+
+def ready():
+    """ Flash green light to indicate ready. """
+    pass
 
 # Main code.
+ready()
+# Set callbacks for devices.  TODO: research this.
+# 
 
     
 
