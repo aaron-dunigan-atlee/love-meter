@@ -16,7 +16,7 @@ GROUP2_PATH = "/home/pi/love-meter/group2/"
 GROUP3_PATH = "/home/pi/love-meter/group3/"
 GROUP4_PATH = "/home/pi/love-meter/group4/"
 # Assuming servo is connected to servo1 connector.  Change this if using a different port.
-METER_SERVO = crickit.servo1
+METER_SERVO = crickit.servo_1
 # Get current servo angle and call it zero:
 SERVO_ZERO = METER_SERVO.angle
 # Initialize LED connected to neopixel port.
