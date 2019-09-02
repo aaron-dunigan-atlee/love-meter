@@ -53,7 +53,7 @@ def meter_increment(love):
     """ Add one to level, but keep within meter range. """
     return min(love + 1, METER_MAX)
 
-def set_meter(level, duration):
+def set_meter(level, duration=0):
     """ 
     Set servo to corresponding meter level, as specified by SERVO_ANGLES. Do so over 
     specified time  duration. 
@@ -112,8 +112,3 @@ while True:
         play_music(GROUP4_PATH)
         love_level = METER_MAX
     
-    
-
-    
-
-
