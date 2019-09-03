@@ -207,21 +207,25 @@ bonus_touched = False
 # TODO(?): avoid handle-pad-handle-pad-handle
 while True:
     if is_touched(HANDLE):
+        print("Handle touched.")
         if not bonus_touched:
             love_level = random_love_level()
         measure_love()
         bonus_touched = False
     elif is_touched(TOUCH2):
+        print("Touchpad 2 touched.")
         # Avoid flutter and avoid registering multiple touchpads in a row: 
         if not bonus_touched:
             bonus_touched = True
             play_music(GROUP2_PATH)
     elif is_touched(TOUCH3):
+        print("Touchpad 3 touched.")
         if not bonus_touched:
             bonus_touched = True
             play_music(GROUP3_PATH)
             love_level = meter_increment(love_level)
     elif is_touched(TOUCH4):
+        print("Touchpad 4 touched.")
         if not bonus_touched:
             bonus_touched = True
             love_level = LOVE_MAX
