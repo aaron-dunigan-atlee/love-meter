@@ -30,13 +30,16 @@ GROUP3_PATH = "/home/pi/love-meter/group3/"
 GROUP4_PATH = "/home/pi/love-meter/group4/"
 # Assuming servo is connected to servo1 connector.  Change this if using a different port.
 METER_SERVO = crickit.servo_1
-# Initialize LED connected to neopixel port.
-crickit.init_neopixel(2)
+# Initialize LED connected to neopixel port and turn them off to begin with.
+NUMBER_OF_LEDS = 2
+crickit.init_neopixel(NUMBER_OF_LEDS)
 LED = crickit.neopixel
 LED.fill(0)
 # Color definitions
+# Note that Connor's hardware uses green-red-blue instead of red-green-blue.
 YELLOW = (255, 255, 0)
-GREEN = (0, 255, 0)
+GREEN = (255, 0, 0)
+BLUE = (0, 0, 255)
 OFF = 0
 # Time interval that touchpads need to be touched in order to be triggered, in seconds (decimals allowed):
 TOUCHPAD_SENSITIVITY = 1.0
@@ -59,16 +62,14 @@ PLAYER = pygame.mixer.music
 # For oscillation animation, number of oscillations and ratio of oscillation.
 MAX_OSCILLATIONS = 10
 OSCILLATION_RATIO = 0.8
-
-# Global variables
 # Range for the random love level.
-love_level_min = 5
-love_level_max = 8
+LOVE_LEVEL_MIN = 5
+LOVE_LEVEL_MAX = 8
 
 # Functions
 def random_love_level():
     """ Choose a random level within the set range.  """
-    return randint(love_level_min, love_level_max)
+    return randint(LOVE_LEVEL_MIN, LOVE_LEVEL_MAX)
 
 def play_music(folder):
     """ Play a random mp3 from the given folder. """
@@ -132,7 +133,7 @@ def is_touched(device):
 
 def measure_love():
     """ Activate the love meter. """
-    LED.fill(YELLOW)
+    LED.fill(BLUE)
     play_music(GROUP1_PATH)
     oscillate_meter(love_level, METER_DURATION)
     LED.fill(GREEN)
