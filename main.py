@@ -2,6 +2,7 @@
 from adafruit_crickit import crickit
 from random import choice, randint
 from time import time, sleep
+from os import listdir
 
 # Global constants
 # Range of meter
@@ -17,8 +18,6 @@ GROUP3_PATH = "/home/pi/love-meter/group3/"
 GROUP4_PATH = "/home/pi/love-meter/group4/"
 # Assuming servo is connected to servo1 connector.  Change this if using a different port.
 METER_SERVO = crickit.servo_1
-# Get current servo angle and call it zero:
-SERVO_ZERO = METER_SERVO.angle
 # Initialize LED connected to neopixel port.
 crickit.init_neopixel(1)
 LED = crickit.neopixel
@@ -46,8 +45,14 @@ love_level = randint(5, 8)
 # Functions
 def play_music(folder):
     """ Play a random mp3 from the given folder. """
-    # TODO: Implement this.
-    print("Playing music from " + folder)
+    # Get a list of songs in the folder:
+    songs = [file in listdir(folder) if file.endswith(".mp3")]
+    # If there are songs in the folder, choose one at random.  
+    if songs:
+        chosen_song = choice(songs)
+        # TODO: Implement a music player.
+        print("Playing music from " + folder)
+        print("Playing song " + chosen_song)
 
 def meter_increment(love):
     """ Add one to level, but keep within meter range. """
@@ -56,12 +61,13 @@ def meter_increment(love):
 def set_meter(level, duration=0):
     """ 
     Set servo to corresponding meter level, as specified by SERVO_ANGLES. Do so over 
-    specified time  duration. 
+    specified time duration. 
     """
     
     # Check we've received an appropriate level first. If not, do nothing.
     if level in SERVO_ANGLES:
-        target_angle = SERVO_ZERO + SERVO_ANGLES[level]
+        # Get the corresponding angle for the desired meter level:
+        target_angle = SERVO_ANGLES[level]
         # TODO: implement time duration
         METER_SERVO.angle = target_angle
 
