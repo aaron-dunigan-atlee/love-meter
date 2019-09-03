@@ -11,7 +11,7 @@
 import time
 from adafruit_crickit import crickit
 
-# Strip or ring of 8 NeoPixels
+# Strip or ring of 2 NeoPixels
 crickit.init_neopixel(2)
 
 crickit.neopixel.fill(0)
@@ -19,11 +19,21 @@ crickit.neopixel.fill(0)
 # Assign to a variable to get a short name and to save time.
 np = crickit.neopixel
 
-while True:
-    np.fill(0)
-    time.sleep(1)
-    np[0] = (100, 0, 0)
-    np[1] = (100, 100, 0)
-    time.sleep(1)
-    np.fill((100, 100, 100))
-    time.sleep(1)
+RED = (255,0,0)
+GREEN = (0,255,0)
+BLUE = (0,0,255)
+
+# Show a sequence of red, green, blue.
+np.fill(0)
+time.sleep(1)
+np.fill(RED)
+time.sleep(1)
+np.fill(0)
+time.sleep(1)
+np.fill(GREEN)
+time.sleep(1)
+np.fill(0)
+time.sleep(1)
+np.fill(BLUE)
+time.sleep(1)
+np.fill(0)
