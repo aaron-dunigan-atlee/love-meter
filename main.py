@@ -9,8 +9,12 @@ from os import listdir
 METER_MIN = 0
 METER_MAX = 10
 # The following is a dictionary that corresponds meter levels to servo angles, 
-# e.g. level 5 is at angle 90.  Adjust this if you want to change the layout of the meter.
-SERVO_ANGLES = {0:0, 1:18, 2:36, 3:54, 4:72, 5:90, 6:108, 7:126, 8:144, 9:162, 10:180}
+# e.g. level 5 is at angle 90.  Adjust this if you want to change the layout of the meter
+# or to match the orientation of the servo.
+SERVO_ANGLES = {0:180, 1:162, 2:144, 3:126, 4:108, 5:90, 6:72, 7:54, 8:36, 9:18, 10:0}
+# Previous version:
+# SERVO_ANGLES = {0:0, 1:18, 2:36, 3:54, 4:72, 5:90, 6:108, 7:126, 8:144, 9:162, 10:180}
+
 # Folder names for music groups:
 GROUP1_PATH = "/home/pi/love-meter/group1/"
 GROUP2_PATH = "/home/pi/love-meter/group2/"
@@ -66,7 +70,7 @@ def set_meter(level, duration=0):
     Set servo to corresponding meter level, as specified by SERVO_ANGLES. Do so over 
     specified time duration. 
     """
-    
+    print("Setting meter to level", level)
     # Check we've received an appropriate level first. If not, do nothing.
     if level in SERVO_ANGLES:
         # Get the corresponding angle for the desired meter level:
@@ -81,9 +85,12 @@ def ready():
         sleep(0.5)
         LED.fill(OFF)
         sleep(0.5)
+    print("Ready")
 
 def reset():
     """ Reset meter and LED's. """
+    print("Reset:")
+    print("LED off.")
     LED.fill(OFF)
     set_meter(METER_MIN)
 
