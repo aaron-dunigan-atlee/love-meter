@@ -118,7 +118,9 @@ def ready():
         sleep(0.5)
         LED.fill(OFF)
         sleep(0.5)
-    print("Ready")
+    print()
+    print()
+    print("Love meter is ready.")
 
 def reset():
     """ Reset meter and LED's. """
