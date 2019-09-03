@@ -47,9 +47,12 @@ RESET_DELAY = 3
 METER_DURATION = 8
 # Number of intervals to use for animation of meter.  More intervals = smoother animation.
 ANIMATION_INTERVALS = 1000
+# Initialize the pygame mixer.
+pygame.mixer.init()
+PLAYER = pygame.mixer.music
 
 # Global variables
-# Specif range for the random love level.
+# Range for the random love level.
 love_level_min = 5
 love_level_max = 8
 
@@ -66,13 +69,12 @@ def play_music(folder):
     if songs:
         chosen_song = choice(songs)
         print("Playing " + folder + chosen_song)
-        # Initialize the pygame mixer and play the song.
-        pygame.mixer.init()
-        pygame.mixer.music.load(folder + chosen_song)
+        # Load and play the song
+        PLAYER.load(folder + chosen_song)
         # Pygame mixer will play in a background thread, 
         # which means program execution will continue while music
         # is playing.
-        pygame.mixer.music.play()
+        PLAYER.play()
     else:
         print("No mp3's found in " + folder)
 
@@ -120,11 +122,15 @@ def is_touched(device):
     return device.value
 
 def measure_love():
+    """ Activate the love meter. """
     LED.fill(YELLOW)
     set_meter(love_level, METER_DURATION)
     LED.fill(GREEN)
     sleep(RESET_DELAY)
     reset()
+    # If user is still touching handle, wait until they let go:
+    while HANDLE.value:
+        pass
 
 # Main code.
 # Signal we're ready.  This is useful when auto-running, because bootup can take a while.
