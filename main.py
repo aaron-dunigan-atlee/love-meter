@@ -124,6 +124,7 @@ def is_touched(device):
 def measure_love():
     """ Activate the love meter. """
     LED.fill(YELLOW)
+    play_music(GROUP1_PATH)
     set_meter(love_level, METER_DURATION)
     LED.fill(GREEN)
     sleep(RESET_DELAY)
