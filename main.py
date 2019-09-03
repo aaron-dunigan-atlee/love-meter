@@ -3,6 +3,7 @@ from adafruit_crickit import crickit
 from random import choice, randint
 from time import time, sleep
 from os import listdir
+import pygame
 
 # Global constants
 # Range of meter
@@ -16,7 +17,6 @@ LOVE_MAX = 9
 SERVO_ANGLES = {0:180, 1:162, 2:144, 3:126, 4:108, 5:90, 6:72, 7:54, 8:36, 9:18, 10:0}
 # Previous version:
 # SERVO_ANGLES = {0:0, 1:18, 2:36, 3:54, 4:72, 5:90, 6:108, 7:126, 8:144, 9:162, 10:180}
-
 # Folder names for music groups:
 GROUP1_PATH = "/home/pi/love-meter/group1/"
 GROUP2_PATH = "/home/pi/love-meter/group2/"
@@ -45,6 +45,8 @@ TOUCH4 = crickit.touch_4
 RESET_DELAY = 3
 # Time in seconds for meter to go from 0 to love_level.
 METER_DURATION = 8
+# Number of intervals to use for animation of meter.  More intervals = smoother animation.
+ANIMATION_INTERVALS = 1000
 
 # Global variables
 # Specif range for the random love level.
@@ -63,9 +65,16 @@ def play_music(folder):
     # If there are songs in the folder, choose one at random.  
     if songs:
         chosen_song = choice(songs)
-        # TODO: Implement a music player.
-        print("Playing music from " + folder)
-        print("Playing song " + chosen_song)
+        print("Playing " + folder + chosen_song)
+        # Initialize the pygame mixer and play the song.
+        pygame.mixer.init()
+        pygame.mixer.music.load(folder + chosen_song)
+        # Pygame mixer will play in a background thread, 
+        # which means program execution will continue while music
+        # is playing.
+        pygame.mixer.music.play()
+    else:
+        print("No mp3's found in " + folder)
 
 def meter_increment(love):
     """ Add one to level, but keep within meter range. """
@@ -74,15 +83,21 @@ def meter_increment(love):
 def set_meter(level, duration=0):
     """ 
     Set servo to corresponding meter level, as specified by SERVO_ANGLES. Do so over 
-    specified time duration. 
+    specified time duration. Assume meter starts at minimum.
     """
     print("Setting meter to level", level)
     # Check we've received an appropriate level first. If not, do nothing.
     if level in SERVO_ANGLES:
         # Get the corresponding angle for the desired meter level:
         target_angle = SERVO_ANGLES[level]
-        # TODO: implement time duration
-        METER_SERVO.angle = target_angle
+        current_angle = SERVO_ANGLES[METER_MIN]
+        # Chop the animation into intervals:
+        time_increment = duration / ANIMATION_INTERVALS
+        angle_increment = (target_angle - current_angle) / ANIMATION_INTERVALS
+        # Animate a little bit at each interval:
+        for x in range(ANIMATION_INTERVALS):
+            METER_SERVO.angle = current_angle + (x + 1) * angle_increment
+            sleep(time_increment)
 
 def ready():
     """ Flash green light to indicate ready. """
@@ -119,6 +134,7 @@ love_level = random_love_level()
 # A 'bonus' is any of the touchpads 2 through 4.  If these haven't been touched,
 # we'll generate a new random love level. 
 bonus_touched = False
+# TODO(?): avoid handle-pad-handle-pad-handle
 while True:
     if is_touched(HANDLE):
         if not bonus_touched:
