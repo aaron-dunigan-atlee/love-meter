@@ -19,12 +19,12 @@ GROUP4_PATH = "/home/pi/love-meter/group4/"
 # Assuming servo is connected to servo1 connector.  Change this if using a different port.
 METER_SERVO = crickit.servo_1
 # Initialize LED connected to neopixel port.
-crickit.init_neopixel(1)
+crickit.init_neopixel(2)
 LED = crickit.neopixel
 # Color definitions
 YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
-OFF = (0, 0, 0)
+OFF = 0
 # Time interval that touchpads need to be touched in order to be triggered, in seconds (decimals allowed):
 TOUCHPAD_SENSITIVITY = 1.0
 # This next one isn't currently used.
