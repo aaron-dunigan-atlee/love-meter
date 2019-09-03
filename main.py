@@ -27,14 +27,17 @@ GREEN = (0, 255, 0)
 OFF = (0, 0, 0)
 # Time interval that touchpads need to be touched in order to be triggered, in seconds (decimals allowed):
 TOUCHPAD_SENSITIVITY = 1.0
-HANDLE_SENSITIVITY = TOUCHPAD_SENSITIVITY
+# This next one isn't currently used.
+# HANDLE_SENSITIVITY = TOUCHPAD_SENSITIVITY
 # Input devices
 HANDLE = crickit.touch_1
 TOUCH2 = crickit.touch_2
 TOUCH3 = crickit.touch_3
 TOUCH4 = crickit.touch_4
-# Time in seconds to delay between activating the meter, and resetting it.
+# Time in seconds to delay after the meter is set, until resetting it.
 RESET_DELAY = 3
+# Time in seconds for meter to go from 0 to love_level.
+METER_DURATION = 8
 
 # Global variables
 # Start with a random love level from 5 to 8.
@@ -88,10 +91,10 @@ def is_touched(device):
     """ Check if device is touched for sufficient time. """
     start_time = time()
     # Wait until handle is no longer touched.
-    while HANDLE.value == True:
+    while device.value == True:
         pass
     # Check if elapsed time exceeds sensitivity:
-    if time() - start_time > HANDLE_SENSITIVITY:
+    if time() - start_time > TOUCHPAD_SENSITIVITY:
         return True
     else:
         return False
