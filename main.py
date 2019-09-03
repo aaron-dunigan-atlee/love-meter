@@ -145,6 +145,7 @@ def measure_love():
 
 def oscillate_meter(level, duration):
     """ Oscillate the meter over duration seconds, so it eventually settles at target. """
+    print("Oscillating to target level", level)
     # Get servo angles:
     target = SERVO_ANGLES[level]
     bottom = SERVO_ANGLES[METER_MIN]
