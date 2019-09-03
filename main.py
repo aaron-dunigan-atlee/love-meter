@@ -46,7 +46,7 @@ love_level = randint(5, 8)
 def play_music(folder):
     """ Play a random mp3 from the given folder. """
     # Get a list of songs in the folder:
-    songs = [file in listdir(folder) if file.endswith(".mp3")]
+    songs = [file for file in listdir(folder) if file.endswith(".mp3")]
     # If there are songs in the folder, choose one at random.  
     if songs:
         chosen_song = choice(songs)
