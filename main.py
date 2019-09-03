@@ -40,9 +40,10 @@ LED.fill(0)
 YELLOW = (255, 255, 0)
 GREEN = (255, 0, 0)
 BLUE = (0, 0, 255)
+RANDOM_COLOR = (randint(80,255), randint(80,255), randint(80,255))
 OFF = 0
 # Time interval that touchpads need to be touched in order to be triggered, in seconds (decimals allowed):
-TOUCHPAD_SENSITIVITY = 1.0
+# TOUCHPAD_SENSITIVITY = 1.0
 # This next one isn't currently used.
 # HANDLE_SENSITIVITY = TOUCHPAD_SENSITIVITY
 # Input devices
@@ -68,6 +69,7 @@ LOVE_LEVEL_MIN = 5
 LOVE_LEVEL_MAX = 8
 # Whether to flicker while measuring love:
 FLICKER = True
+# FLICKER = False
 # How often to flicker.  Must be between 0 and 1.  
 # 0 will never flicker and 1 will flicker constantly.
 FLICKER_INTENSITY = 0.4
