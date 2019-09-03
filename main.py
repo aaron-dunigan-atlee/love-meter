@@ -1,3 +1,9 @@
+"""
+love-meter/main.py
+Love meter code by Aaron Dunigan AtLee, Sept. 2019.
+Written for Connor Campbell's love meter device.
+"""
+
 # Imports
 from adafruit_crickit import crickit
 from random import choice, randint
@@ -44,9 +50,9 @@ TOUCH4 = crickit.touch_4
 # Time in seconds to delay after the meter is set, until resetting it.
 RESET_DELAY = 3
 # Time in seconds for meter to go from 0 to love_level.
-METER_DURATION = 5
+METER_DURATION = 1
 # Number of intervals to use for animation of meter.  More intervals = smoother animation.
-ANIMATION_INTERVALS = 1000
+ANIMATION_INTERVALS = 50
 # Initialize the pygame mixer.
 pygame.mixer.init()
 PLAYER = pygame.mixer.music
@@ -153,6 +159,7 @@ def oscillate_meter(level, duration):
         # Calculate new oscillation using exponential decay:
         bottom = target - OSCILLATION_RATIO * (target - bottom)
         top = target + OSCILLATION_RATIO * (top - target)
+    # Land on target:
     move_servo(current_angle, target, time_increment)
 
 def move_servo(start_angle, end_angle, duration):
