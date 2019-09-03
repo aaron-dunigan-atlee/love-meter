@@ -50,15 +50,15 @@ TOUCH4 = crickit.touch_4
 # Time in seconds to delay after the meter is set, until resetting it.
 RESET_DELAY = 3
 # Time in seconds for meter to go from 0 to love_level.
-METER_DURATION = 1
+METER_DURATION = 2
 # Number of intervals to use for animation of meter.  More intervals = smoother animation.
 ANIMATION_INTERVALS = 50
 # Initialize the pygame mixer.
 pygame.mixer.init()
 PLAYER = pygame.mixer.music
 # For oscillation animation, number of oscillations and ratio of oscillation.
-MAX_OSCILLATIONS = 20
-OSCILLATION_RATIO = 0.9
+MAX_OSCILLATIONS = 10
+OSCILLATION_RATIO = 0.8
 
 # Global variables
 # Range for the random love level.
