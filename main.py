@@ -121,7 +121,7 @@ def is_touched(device):
 
 def measure_love():
     LED.fill(YELLOW)
-    set_meter(love_level)
+    set_meter(love_level, METER_DURATION)
     LED.fill(GREEN)
     sleep(RESET_DELAY)
     reset()
@@ -157,5 +157,3 @@ while True:
             love_level = LOVE_MAX
             play_music(GROUP4_PATH)
             
-        
-    
