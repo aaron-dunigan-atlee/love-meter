@@ -7,7 +7,9 @@ from os import listdir
 # Global constants
 # Range of meter
 METER_MIN = 0
-METER_MAX = 10
+METER_MAX = 9
+# This is the max love you can get, by pushing touchpad 4:
+LOVE_MAX = 9
 # The following is a dictionary that corresponds meter levels to servo angles, 
 # e.g. level 5 is at angle 90.  Adjust this if you want to change the layout of the meter
 # or to match the orientation of the servo.
@@ -25,6 +27,7 @@ METER_SERVO = crickit.servo_1
 # Initialize LED connected to neopixel port.
 crickit.init_neopixel(2)
 LED = crickit.neopixel
+LED.fill(0)
 # Color definitions
 YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
@@ -44,12 +47,15 @@ RESET_DELAY = 3
 METER_DURATION = 8
 
 # Global variables
-# Start with a random love level from 5 to 8.
-# This is the level the meter *will* show when the handle is pulled, 
-# it doesn't set the meter's current position.
-love_level = randint(5, 8)
+# Specif range for the random love level.
+love_level_min = 5
+love_level_max = 8
 
 # Functions
+def random_love_level():
+    """ Choose a random level within the set range.  """
+    return randint(love_level_min, love_level_max)
+
 def play_music(folder):
     """ Play a random mp3 from the given folder. """
     # Get a list of songs in the folder:
@@ -95,16 +101,8 @@ def reset():
     set_meter(METER_MIN)
 
 def is_touched(device):
-    """ Check if device is touched for sufficient time. """
-    start_time = time()
-    # Wait until handle is no longer touched.
-    while device.value == True:
-        pass
-    # Check if elapsed time exceeds sensitivity:
-    if time() - start_time > TOUCHPAD_SENSITIVITY:
-        return True
-    else:
-        return False
+    """ Check if device is touched. """
+    return device.value
 
 def measure_love():
     LED.fill(YELLOW)
@@ -114,16 +112,34 @@ def measure_love():
     reset()
 
 # Main code.
+# Signal we're ready.  This is useful when auto-running, because bootup can take a while.
 ready()
+# Set a random love level.
+love_level = random_love_level()
+# A 'bonus' is any of the touchpads 2 through 4.  If these haven't been touched,
+# we'll generate a new random love level. 
+bonus_touched = False
 while True:
     if is_touched(HANDLE):
+        if not bonus_touched:
+            love_level = random_love_level()
         measure_love()
+        bonus_touched = False
     elif is_touched(TOUCH2):
-        play_music(GROUP2_PATH)
+        # Avoid flutter and avoid registering multiple touchpads in a row: 
+        if not bonus_touched:
+            bonus_touched = True
+            play_music(GROUP2_PATH)
     elif is_touched(TOUCH3):
-        play_music(GROUP3_PATH)
-        love_level = meter_increment(love_level)
+        if not bonus_touched:
+            bonus_touched = True
+            play_music(GROUP3_PATH)
+            love_level = meter_increment(love_level)
     elif is_touched(TOUCH4):
-        play_music(GROUP4_PATH)
-        love_level = METER_MAX
+        if not bonus_touched:
+            bonus_touched = True
+            love_level = LOVE_MAX
+            play_music(GROUP4_PATH)
+            
+        
     
