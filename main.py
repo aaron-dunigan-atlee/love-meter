@@ -6,7 +6,7 @@ Written for Connor Campbell's love meter device.
 
 # Imports
 from adafruit_crickit import crickit
-from random import choice, randint
+from random import choice, randint, random
 from time import time, sleep
 from os import listdir
 import pygame
@@ -52,7 +52,8 @@ TOUCH3 = crickit.touch_3
 TOUCH4 = crickit.touch_4
 # Time in seconds to delay after the meter is set, until resetting it.
 RESET_DELAY = 3
-# Time in seconds for meter to go from 0 to love_level.
+# Time in seconds for meter to go from 0 to love_level.  
+# Doesn't include time needed for servo to move, so the actual time will be longer. 
 METER_DURATION = 2
 # Number of intervals to use for animation of meter.  More intervals = smoother animation.
 ANIMATION_INTERVALS = 50
@@ -65,6 +66,11 @@ OSCILLATION_RATIO = 0.8
 # Range for the random love level.
 LOVE_LEVEL_MIN = 5
 LOVE_LEVEL_MAX = 8
+# Whether to flicker while measuring love:
+FLICKER = True
+# How often to flicker.  Must be between 0 and 1.  
+# 0 will never flicker and 1 will flicker constantly.
+FLICKER_INTENSITY = 0.4
 
 # Functions
 def random_love_level():
@@ -79,12 +85,15 @@ def play_music(folder):
     if songs:
         chosen_song = choice(songs)
         print("Playing " + folder + chosen_song)
-        # Load and play the song
-        PLAYER.load(folder + chosen_song)
-        # Pygame mixer will play in a background thread, 
-        # which means program execution will continue while music
-        # is playing.
-        PLAYER.play()
+        try:
+            # Load and play the song
+            PLAYER.load(folder + chosen_song)
+            # Pygame mixer will play in a background thread, 
+            # which means program execution will continue while music
+            # is playing.
+            PLAYER.play()
+        except:
+            print("Error playing song.")
     else:
         print("No mp3's found in " + folder)
 
@@ -95,7 +104,8 @@ def meter_increment(love):
 def set_meter(level, duration=0):
     """ 
     Set servo to corresponding meter level, as specified by SERVO_ANGLES. Do so over 
-    specified time duration. Assume meter starts at minimum.
+    specified time duration. Assume meter starts at minimum.  Not currently used.  
+    Using oscillation instead.
     """
     print("Setting meter to level", level)
     # Check we've received an appropriate level first. If not, do nothing.
@@ -148,23 +158,25 @@ def measure_love():
 def oscillate_meter(level, duration):
     """ Oscillate the meter over duration seconds, so it eventually settles at target. """
     print("Oscillating to target level", level)
-    # Get servo angles:
-    target = SERVO_ANGLES[level]
-    bottom = SERVO_ANGLES[METER_MIN]
-    current_angle = bottom
-    top = SERVO_ANGLES[METER_MAX]
-    # Time increment for each swing of the needle:
-    time_increment = (METER_DURATION / MAX_OSCILLATIONS) / 2
-    # Do the oscillations:
-    for i in range(MAX_OSCILLATIONS):
-        move_servo(current_angle, top, time_increment)
-        move_servo(top, bottom, time_increment)
+    # Check we've received an appropriate level first. If not, do nothing.
+    if level in SERVO_ANGLES:
+        # Get servo angles:
+        target = SERVO_ANGLES[level]
+        bottom = SERVO_ANGLES[METER_MIN]
         current_angle = bottom
-        # Calculate new oscillation using exponential decay:
-        bottom = target - OSCILLATION_RATIO * (target - bottom)
-        top = target + OSCILLATION_RATIO * (top - target)
-    # Land on target:
-    move_servo(current_angle, target, time_increment)
+        top = SERVO_ANGLES[METER_MAX]
+        # Time increment for each swing of the needle:
+        time_increment = (METER_DURATION / MAX_OSCILLATIONS) / 2
+        # Do the oscillations:
+        for i in range(MAX_OSCILLATIONS):
+            move_servo(current_angle, top, time_increment)
+            move_servo(top, bottom, time_increment)
+            current_angle = bottom
+            # Calculate new oscillation using exponential decay:
+            bottom = target - OSCILLATION_RATIO * (target - bottom)
+            top = target + OSCILLATION_RATIO * (top - target)
+        # Land on target:
+        move_servo(current_angle, target, time_increment)
 
 def move_servo(start_angle, end_angle, duration):
     """ 
@@ -178,6 +190,11 @@ def move_servo(start_angle, end_angle, duration):
     for x in range(ANIMATION_INTERVALS):
         METER_SERVO.angle = start_angle + (x + 1) * angle_increment
         sleep(time_increment)
+        # If FLICKER is turned on, then there's  a percent chance the light intensity will change.
+        if FLICKER and random() < FLICKER_INTENSITY:
+                intensity = randint(100,255)
+                # This will be some shade of blue.  Change this line if you want a different color.
+                LED.fill((0, 0, intensity))
 
 # Main code.
 # Signal we're ready.  This is useful when auto-running, because bootup can take a while.
