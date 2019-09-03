@@ -44,12 +44,15 @@ TOUCH4 = crickit.touch_4
 # Time in seconds to delay after the meter is set, until resetting it.
 RESET_DELAY = 3
 # Time in seconds for meter to go from 0 to love_level.
-METER_DURATION = 8
+METER_DURATION = 5
 # Number of intervals to use for animation of meter.  More intervals = smoother animation.
 ANIMATION_INTERVALS = 1000
 # Initialize the pygame mixer.
 pygame.mixer.init()
 PLAYER = pygame.mixer.music
+# For oscillation animation, number of oscillations and ratio of oscillation.
+MAX_OSCILLATIONS = 20
+OSCILLATION_RATIO = 0.9
 
 # Global variables
 # Range for the random love level.
@@ -125,13 +128,41 @@ def measure_love():
     """ Activate the love meter. """
     LED.fill(YELLOW)
     play_music(GROUP1_PATH)
-    set_meter(love_level, METER_DURATION)
+    oscillate_meter(love_level, METER_DURATION)
     LED.fill(GREEN)
     sleep(RESET_DELAY)
     reset()
     # If user is still touching handle, wait until they let go:
     while HANDLE.value:
         pass
+
+def oscillate_meter(level, duration):
+    """ Oscillate the meter over duration seconds, so it eventually settles at target. """
+    target = ANGLES[level]
+    bottom = ANGLES[METER_MIN]
+    current_angle = bottom
+    top = ANGLES[METER_MAX]
+    time_increment = (METER_DURATION / MAX_OSCILLATIONS) / 2
+    for i in range(MAX_OSCILLATIONS):
+        move_servo(current_angle, top, time_increment)
+        move_servo(top, bottom, time_increment)
+        current_angle = bottom
+        bottom = target - OSCILLATION_RATIO * (target - bottom)
+        top = target + OSCILLATION_RATIO * (top - target)
+    move_servo(current_angle, target, time_increment)
+
+def move_servo(start_angle, end_angle, duration):
+    """ 
+    Move servo from start_angle to end_angle. Do so over 
+    specified time duration. Assume meter starts at start_angle.
+    """
+    # Chop the animation into intervals:
+    time_increment = duration / ANIMATION_INTERVALS
+    angle_increment = (end_angle - start_angle) / ANIMATION_INTERVALS
+    # Animate a little bit at each interval:
+    for x in range(ANIMATION_INTERVALS):
+        METER_SERVO.angle = start_angle + (x + 1) * angle_increment
+        sleep(time_increment)
 
 # Main code.
 # Signal we're ready.  This is useful when auto-running, because bootup can take a while.
