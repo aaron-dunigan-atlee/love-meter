@@ -138,15 +138,19 @@ def measure_love():
 
 def oscillate_meter(level, duration):
     """ Oscillate the meter over duration seconds, so it eventually settles at target. """
-    target = ANGLES[level]
-    bottom = ANGLES[METER_MIN]
+    # Get servo angles:
+    target = SERVO_ANGLES[level]
+    bottom = SERVO_ANGLES[METER_MIN]
     current_angle = bottom
-    top = ANGLES[METER_MAX]
+    top = SERVO_ANGLES[METER_MAX]
+    # Time increment for each swing of the needle:
     time_increment = (METER_DURATION / MAX_OSCILLATIONS) / 2
+    # Do the oscillations:
     for i in range(MAX_OSCILLATIONS):
         move_servo(current_angle, top, time_increment)
         move_servo(top, bottom, time_increment)
         current_angle = bottom
+        # Calculate new oscillation using exponential decay:
         bottom = target - OSCILLATION_RATIO * (target - bottom)
         top = target + OSCILLATION_RATIO * (top - target)
     move_servo(current_angle, target, time_increment)
