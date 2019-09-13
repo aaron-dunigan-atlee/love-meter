@@ -24,7 +24,7 @@ SERVO_ANGLES = {0:180, 1:162, 2:144, 3:126, 4:108, 5:90, 6:72, 7:54, 8:36, 9:18,
 # Previous version:
 # SERVO_ANGLES = {0:0, 1:18, 2:36, 3:54, 4:72, 5:90, 6:108, 7:126, 8:144, 9:162, 10:180}
 # Folder names for music groups:
-START_GROUP_PATH = "/home/pi/love-meter/startup"
+START_GROUP_PATH = "/home/pi/love-meter/startup/"
 GROUP1_PATH = "/home/pi/love-meter/group1/"
 GROUP2_PATH = "/home/pi/love-meter/group2/"
 GROUP3_PATH = "/home/pi/love-meter/group3/"
